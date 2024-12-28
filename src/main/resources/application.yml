@@ -1,0 +1,58 @@
+#클래스 내에서 사용될 상수값 정의
+
+# 파일 업로드시의 파일 경로
+file:
+  directory: C:/myDownload/mandalart
+
+#페이징의 기본 사이즈
+const:
+  default-page-size: 20
+
+
+#어플리케이션 설정
+spring:
+  application:
+    name: mandalartWeb
+
+    #데이터베이스 연결 설정
+  datasource:
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+    url: jdbc:log4jdbc:mariadb://localhost/mandalart
+    username: root
+    password: green502
+
+    #구글 이메일 설정(SMTP)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mandalart502@gmail.com
+    password: rfjaqquzxnmzrfbq
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+
+  #File 업로드 설정
+  servlet:
+    multipart:
+      max-file-size: 15MB
+
+#MyBatis 설정
+mybatis:
+  mapper-locations: mappers/**/*.xml
+
+#Swagger 설정
+springdoc:
+  swagger-ui:
+    default-model-expand-depth: 10
+    display-request-duration: true
+    groups-order: asc
+    operations-sorter: method
+    path: /swagger
+    tags-sorter: alpha
+  cache:
+    disabled: true

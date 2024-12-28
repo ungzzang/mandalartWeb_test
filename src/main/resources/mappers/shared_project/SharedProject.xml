@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green1st.mandalartWeb.shared_project.SharedProjectMapper">
+    <insert id="insSharedProject" useGeneratedKeys="true" keyProperty="projectId">
+        INSERT INTO shared_project
+        SET project_id =#{projectId}
+        , title = #{title}
+        , content = #{content}
+    </insert>
+
+    <select id="selSharedProjectList">
+        SELECT A.project_id AS projectId, C.nick_name AS nickName, A.title, A.content, B.pic, A.created_at AS createDate
+        , (
+        SELECT COUNT(project_id)
+        FROM shared_project_like
+        WHERE project_id = A.project_id
+        )  AS likeCnt
+        , (
+        SELECT COUNT(comment_id)
+        FROM shared_project_comment
+        WHERE project_id = A.project_id
+        ) AS commentCnt
+        FROM shared_project A LEFT JOIN project B
+        ON A.project_id = B.project_id
+        LEFT JOIN user C
+        ON B.user_id = C.user_id
+        WHERE 1 = 1
+        <choose>
+            <when test="searchFilter == 1 and searchText != null">
+                AND A.title LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 2 and searchText != null">
+                AND A.content LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 3 and searchText != null">
+                AND A.title LIKE '%${searchText}%' AND A.content LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 4 and searchText != null">
+                AND C.nick_name LIKE '%${searchText}%'
+            </when>
+        </choose>
+        <choose>
+            <when test="orderFilter == 0">
+                ORDER BY A.created_at DESC
+            </when>
+            <when test="orderFilter == 1">
+                ORDER BY likeCnt DESC
+            </when>
+            <when test="orderFilter == 2">
+                ORDER BY commentCnt DESC
+            </when>
+            <otherwise>
+                ORDER BY A.created_at DESC
+            </otherwise>
+        </choose>
+        LIMIT #{startIdx}, #{size}
+    </select>
+
+    <update id="updSharedProject">
+        UPDATE shared_project
+        <set>
+            <if test="title != null">
+                title = #{title}
+            </if>
+            <if test="content != null">
+                content = #{content}
+            </if>
+        </set>
+        WHERE project_id = #{projectId}
+    </update>
+
+    <delete id="delSharedProject">
+        DELETE FROM shared_project
+        WHERE project_id = #{projectId}
+    </delete>
+</mapper>

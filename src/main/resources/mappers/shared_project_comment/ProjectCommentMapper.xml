@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.green1st.mandalartWeb.shared_project_comment.ProjectCommentMapper">
+
+    <insert id="postSharedProjectComment" useGeneratedKeys="true" keyProperty="commentId">
+        INSERT INTO shared_project_comment
+        SET project_id = #{projectId}
+        , user_id = #{userId}
+        , content = #{content}
+    </insert>
+
+    <select id="getSharedProjectComment">
+        SELECT A.comment_id AS commentId
+        , A.content
+        , A.created_at AS createdAt
+        , B.user_id AS userId
+        , IFNULL(B.nick_name, B.user_id) AS nickName
+        , B.pic
+        FROM shared_project_comment A
+        INNER JOIN user B
+        ON A.user_id = B.user_id
+        WHERE A.project_id = #{projectId}
+        ORDER BY A.comment_id DESC
+    </select>
+
+    <update id="updateSharedProjectComment">
+        UPDATE shared_project_comment
+        SET content = #{content}
+        WHERE user_id = #{userId}
+        AND comment_id = #{commentId}
+    </update>
+
+    <delete id="deleteSharedProjectComment">
+        DELETE FROM shared_project_comment
+        WHERE comment_id = #{commentId}
+        AND user_id = #{userId}
+    </delete>
+</mapper>

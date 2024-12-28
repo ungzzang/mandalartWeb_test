@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.green1st.mandalartWeb.user.UserMapper">
+
+<!--이메일, 닉네임, 비밀번호 뽑아오기(중복체크)-->
+    <select id="checkEmailPw">
+        SELECT user_id as userId, upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="checkNickName">
+        SELECT nick_name as nickName
+        FROM user
+        WHERE nick_name = #{nickName}
+    </select>
+
+    <select id="checkPassWord">
+        SELECT upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
+<!--회원가입-->
+    <insert id="insUser">
+        INSERT INTO user
+        SET user_id = #{userId}
+          , upw = #{upw}
+          , nick_name = #{nickName}
+          , pic = #{pic}
+    </insert>
+
+<!--이메일 인증확인용-->
+    <insert id="insAuth">
+        INSERT INTO email_verification
+        SET user_id = #{email}
+          , token = #{authKey}
+          , expired_date = #{expiryTime}
+    </insert>
+
+    <select id="selAuth" >
+        SELECT user_id, token as authKey, expired_date as expiryTime
+        FROM email_verification
+        WHERE user_id = #{email}
+    </select>
+
+    <delete id="delAuth">
+        DELETE FROM email_verification
+        WHERE user_id = #{email}
+    </delete>
+
+    <select id="checkCode">
+        SELECT *
+        FROM email_verification
+        WHERE user_id = #{email}
+    </select>
+
+    <delete id="delUserFirst">
+        DELETE FROM user
+        WHERE user_id = #{email}
+    </delete>
+
+
+
+
+<!--로그인-->
+    <select id="selUser">
+        SELECT user_id as userId
+        , nick_name as nickName
+        , upw
+        , pic
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="selUser2">
+        SELECT upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
+<!--유저정보 조회-->
+    <select id="selUserInfo">
+        SELECT user_id as userId, nick_name as nickName, pic
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
+<!--유저정보 수정-->
+    <update id="updUser">
+        UPDATE user
+        <set>
+            <if test=" newUpw != null and newUpw != '' and checkUpw != null and checkUpw != '' " >
+                upw = #{newUpw}
+            </if>
+            <if test=" nickName != null and nickName != '' ">
+                , nick_name = #{nickName}
+            </if>
+            <if test="picName != null">
+                , pic = #{picName}
+            </if>
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+
+<!--회원삭제를 위한 이메일, 비밀번호체크-->
+    <select id="checkPassWord2">
+        SELECT user_id, upw
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+
+<!--내가 좋아요한거, 댓글단거 삭제-->
+    <delete id="delMyLikeAndComment">
+        DELETE a, b
+        FROM shared_project_like a
+        JOIN shared_project_comment b
+        ON a.user_id = b.user_id
+        WHERE a.user_id = #{userId}
+    </delete>
+
+<!--내 프로젝트의 좋아요, 댓글 삭제-->
+    <delete id="delProjectLikeAndProjectComment">
+        DELETE B, C
+        FROM shared_project A
+        LEFT JOIN shared_project_like B
+        ON A.project_id = B.project_id
+        LEFT JOIN shared_project_comment C
+        ON A.project_id = C.project_id
+        WHERE A.project_id = #{projectId}
+    </delete>
+
+    <delete id="delSharedProject">
+        DELETE FROM shared_project A
+        WHERE project_id = #{projectId}
+    </delete>
+
+    <delete id="delMandalart">
+        DELETE FROM mandalart A
+        WHERE project_id = #{projectId}
+    </delete>
+
+    <delete id="delProject">
+        DELETE FROM project A
+        WHERE project_id = #{projectId}
+        AND user_id
+    </delete>
+
+
+    <delete id="delUser"> <!--회원탈퇴-->
+        DELETE FROM user
+        WHERE user_id = #{userId}
+    </delete>
+
+
+
+<!-- 임시 비밀번호 발급-->
+    <select id="checkPasswordId">
+        SELECT user_id AS userId
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+<!--임시 비밀번호로 수정-->
+    <update id="updTmpPassword">
+        UPDATE user
+        SET upw = #{tmpPassword}
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

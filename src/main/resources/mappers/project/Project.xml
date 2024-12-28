@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green1st.mandalartWeb.project.ProjectMapper">
+    <insert id="insProject" useGeneratedKeys="true" keyProperty="projectId">
+        INSERT INTO project
+        SET user_id = #{userId}
+        , title = #{title}
+        , content = #{content}
+        <if test="pic != null">
+            , pic = #{pic}
+        </if>
+    </insert>
+
+    <insert id="insMandalart" useGeneratedKeys="true" keyProperty="mandalartId">
+        INSERT INTO mandalart
+        (project_id, parent_id, title, depth, order_id)
+        VALUES
+        (#{projectId},#{parentId}, '', #{depth}, #{orderId})
+    </insert>
+
+    <select id="selProjectList">
+        SELECT project_id AS projectId, title, pic, created_at AS createDate
+        , (
+            SELECT COUNT(project_id)
+            FROM shared_project
+            WHERE project_id = A.project_id
+        )  AS sharedFg
+        FROM project A
+        WHERE user_id = #{userId}
+        <choose>
+            <when test="searchFilter == 1 and searchText != null">
+                AND title LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 2 and searchText != null">
+                AND content LIKE '%${searchText}%'
+            </when>
+            <when test="searchFilter == 3 and searchText != null">
+                AND title LIKE '%${searchText}%' AND content LIKE '%${searchText}%'
+            </when>
+        </choose>
+        ORDER BY created_at DESC
+        LIMIT #{startIdx}, #{size}
+    </select>
+
+    <select id="selProjectByUserIdAndProjectId">
+        SELECT project_id AS projectId, title, pic, created_at AS createDate
+        FROM project A
+        WHERE user_id = #{userId}
+        AND project_id = #{projectId}
+    </select>
+
+    <update id="updProject">
+        UPDATE project
+        <set>
+            <if test="title != null">
+                title = #{title}
+            </if>
+            <if test="content != null">
+                content = #{content}
+            </if>
+            <if test="pic != null">
+                 pic = #{pic}
+            </if>
+        </set>
+        WHERE user_id = #{userId}
+        AND project_id = #{projectId}
+    </update>
+
+    <delete id="delProject">
+        DELETE FROM project
+        WHERE project_id = #{projectId}
+            AND user_id = #{userId}
+    </delete>
+
+    <delete id="delMandalart">
+        DELETE FROM mandalart
+        WHERE project_id = #{projectId}
+    </delete>
+</mapper>
