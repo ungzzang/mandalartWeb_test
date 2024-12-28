@@ -95,7 +95,7 @@ public class UserService {
         }catch (IOException e){
             e.printStackTrace();
         }
-        userMessage.setMessage("이메일로 링크를 보냈습니다.");
+        userMessage.setMessage("이메일 인증 링크를 전송했습니다.");
         return result;
 
     }
@@ -137,9 +137,9 @@ public class UserService {
 
     //로그인
     public UserSignInRes postSignIn(UserSignInReq p){
-        EmailVerification emailVerification = userMapper.checkCode(p.getUserId());
+        int emailVerification = userMapper.checkCode(p.getUserId());
 
-        if(emailVerification != null){
+        if(emailVerification == 1){
             UserSignInRes res = new UserSignInRes();
             res.setMessage("이메일인증을 해주세요.");
             return res;

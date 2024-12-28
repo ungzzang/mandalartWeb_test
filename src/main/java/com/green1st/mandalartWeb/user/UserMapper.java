@@ -25,7 +25,7 @@ public interface UserMapper {
     int delUserFirst(AuthKeyDto p);
 
     //로그인 전 인증했는지 체크
-    EmailVerification checkCode(String userId);
+    int checkCode(String userId);
 
 
 

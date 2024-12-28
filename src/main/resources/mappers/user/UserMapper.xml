@@ -54,9 +54,9 @@
     </delete>
 
     <select id="checkCode">
-        SELECT *
+        SELECT COUNT(user_id)
         FROM email_verification
-        WHERE user_id = #{email}
+        WHERE user_id = #{userId}
     </select>
 
     <delete id="delUserFirst">
