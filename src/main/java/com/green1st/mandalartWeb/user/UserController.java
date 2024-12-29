@@ -84,9 +84,9 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("signUpConfirm")
+    @GetMapping("auth_num")
     @Operation(summary = "이메일 검증")
-    public String confirmSignUp(@ParameterObject @ModelAttribute AuthKeyDto authKeyDto) {
+    public String authNumChk(@ParameterObject @ModelAttribute AuthKeyDto authKeyDto) {
         int isCodeValid = userService.selAuth(authKeyDto);
 
         if(isCodeValid ==2) {
@@ -108,8 +108,8 @@ public class UserController {
         return "회원가입이 완료되었습니다.";
     }
 
-    @GetMapping("signUpConfirm1")
-    public ResultResponse<Integer> confirmSignUp1(@ModelAttribute AuthKeyDto p) {
+    @GetMapping("auth_num1")
+    public ResultResponse<Integer> authNumChk1(@ModelAttribute AuthKeyDto p) {
         int isCodeValid = userService.selAuth(p);
 
         return ResultResponse.<Integer>builder()
@@ -138,7 +138,7 @@ public class UserController {
 
     @GetMapping()
     @Operation(summary = "유저정보조회")
-    public ResultResponse<UserInfoGetRes> getUserInfo(@ParameterObject @ModelAttribute @Valid UserInfoGetReq p){
+    public ResultResponse<UserInfoGetRes> getUser(@ParameterObject @ModelAttribute @Valid UserInfoGetReq p){
 
         UserInfoGetRes res = userService.getUserInfo(p);
 

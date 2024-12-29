@@ -53,6 +53,10 @@ public class MailSendService {
                     .append("&expiry=")
                     .append(System.currentTimeMillis() + EXPIRATION_TIME)// 만료 시간 추가(현재 시간 + 10분)
                     .append("' target='_blank'>이메일 인증 확인 (클릭)</a>")
+                    .append("</div>")
+                    .append("<div class='footer'>")
+                    .append("<p>감사합니다.<br>관리자 드림</p>")
+                    .append("</div>")
                     .toString());
             sendMail.setFrom("mandalart502@gmail.com", "관리자");  // 실제 발신 이메일 주소로 변경
             sendMail.setTo(email);

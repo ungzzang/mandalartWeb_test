@@ -9,6 +9,7 @@ public interface UserMapper {
     DuplicateEmailRes checkEmailPw(String userId);
     DuplicateNickNameRes checkNickName(String nickName);
     UserUpdateRes checkPassWord(String userId);
+
     //회원가입
     int insUser(UserSignUpReq p);
 
@@ -26,13 +27,6 @@ public interface UserMapper {
 
     //로그인 전 인증했는지 체크
     int checkCode(String userId);
-
-
-
-
-
-
-
 
 
 

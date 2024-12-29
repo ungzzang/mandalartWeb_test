@@ -154,8 +154,8 @@
         AND user_id
     </delete>
 
-
-    <delete id="delUser"> <!--회원탈퇴-->
+<!--회원탈퇴-->
+    <delete id="delUser">
         DELETE FROM user
         WHERE user_id = #{userId}
     </delete>
